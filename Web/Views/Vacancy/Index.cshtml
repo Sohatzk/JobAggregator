@@ -1,0 +1,146 @@
+﻿@using AppCore.Enums
+@model VacancyIndexViewModel
+@{
+    ViewData["Title"] = "Список вакансій";
+}
+
+<div class="col-lg-12 mb-5 text-center">
+    <div class="card">
+
+        <div class="card-body">
+
+            <h4 class="">
+                <span>Список вакансій</span>
+            </h4>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div class="col-lg-12 mb-5">
+    <div class="card">
+        <div class="card-body">
+            <form class="w-100">
+
+                <div class="row">
+                    <div class="col-lg-6 mb-3">
+                        <h5>Тип зайнятості</h5>
+                        @foreach (var empType in Model.EmploymentTypes)
+                        {
+                            var id = empType.Key + empType.Value;
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="@id" value="@empType.Key" name="employmentType"
+                                       @(Model.EmploymentType.HasValue && (int)Model.EmploymentType.Value == empType.Key ? "checked" : "")>
+                                <label class="custom-control-label" for="@id">@empType.Value</label>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <h5>Досвід роботи</h5>
+                        @foreach (var expType in Model.ExperienceTypes)
+                        {
+                            var id = expType.Key + expType.Value;
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="@id" value="@expType.Key" name="experienceType"
+                                       @(Model.ExperienceType.HasValue && (int)Model.ExperienceType.Value == expType.Key ? "checked" : "")>
+                                <label class="custom-control-label" for="@id">@expType.Value</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 mb-3">
+                        <input class="form-control w-100" type="text" placeholder="Пошук (місто, опис, посада)" name="searchQuery" id="searchQuery"
+                               value="@Model.SearchQuery" aria-label="Search">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-left">
+                        <button class="btn btn-primary" style="margin:0!important" type="button" onclick="searchVacancies()">Підтвердити</button>
+                    </div>
+                    <div class="col text-right">
+                        <button class="btn btn-light" style="margin:0!important" type="button" onclick="resetFilters()">Скинути фільтри</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@foreach (var item in Model.Vacancies)
+{
+    <div class="col-lg-12 mb-5">
+        <div class="card h-100">
+
+            <div class="card-body ">
+                <div class="d-flex flex-column">
+
+                    <div class="p-2">
+                        <div class="row">
+                            <div class="col">
+                                <h4 class="font-weight-bold dark-grey-text">
+                                    @item.Name
+                                </h4>
+                            </div>
+                            <div class="col text-right">
+                                <a href="@item.VendorVacancyUrl" 
+                                   class="badge @(item.VendorName == "ua.jooble.org" ? "badge-info" : "badge-danger")">@item.VendorName</a>
+                            </div>
+                        </div>
+
+                        <div class="text-black-50">
+                            @item.Employer
+                            <br />
+                            @item.Area
+                        </div>
+                    </div>
+
+                    <div class="p-2">
+                        <h5 class="">
+                          @Html.Raw(item.ShortDescription)
+                        </h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-left col-6">
+                            <a href="@Url.Action("Details", "Vacancy", new { id = item.VacancyId })" class="btn btn-primary btn-md">Докладніше</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        function searchVacancies() {
+            var empType = $('input[name="employmentType"]:checked').val();
+            var expType = $('input[name="experienceType"]:checked').val();
+            var searchQuery = $('#searchQuery').val();
+    
+            var query = "@Url.Action("Index", "Vacancy")" + "?";
+    
+            if (empType)
+                query += "employmentType=" + empType + "&";
+    
+            if (expType)
+                query += "experienceType=" + expType + "&";
+    
+            if (searchQuery)
+                query += "searchQuery=" + searchQuery;
+    
+            window.location = query;
+        }
+
+        function resetFilters() {
+            $('input[name="employmentType"]').prop('checked', false);
+            $('input[name="experienceType"]').prop('checked', false);
+            $('#searchQuery').val("");
+        }
+    </script>
+}
+
+

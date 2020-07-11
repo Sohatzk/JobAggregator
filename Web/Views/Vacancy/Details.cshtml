@@ -1,0 +1,70 @@
+﻿@model VacancyDetailsViewModel
+@{
+    ViewData["Title"] = "Список вакансій";
+}
+
+<div class="col-lg-12 mb-5 text-center">
+    <div class="card">
+
+        <div class="card-body">
+
+            <h4 class="mb-2 mb-sm-0 pt-1">
+                <span>Вакансія №@Model.VacancyId</span>
+            </h4>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="col-lg-12 mb-5">
+    @if (Model.IsFromRespond)
+    {
+        <strong class="text-success">Вашу заявку прийнято на розгляд!</strong>
+    }
+    <div class="card h-100">
+
+        <div class="card-body ">
+            <div class="d-flex flex-column">
+
+                <div class="p-2">
+                    <h3 class="font-weight-bold">
+                        @Model.Name
+                    </h3>
+                    <div class="text-black-50">
+                        <h5>@Model.Employer</h5>
+                        <h5>@Model.Area</h5>
+                    </div>
+                    <div class="h5">
+                        <span class="badge badge-info">
+                            @Model.EmploymentType
+                        </span>
+                        <span class="badge badge-info">
+                            @Model.ExperienceType
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-2">
+                    <h5 class="">
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            @Html.Raw(Model.Description)
+                        }
+                        else
+                        {
+                            @Html.Raw(@Model.ShortDescription.Replace(Environment.NewLine, "<br/>"))
+                            <a href="@Model.VendorVacancyUrl">Докладніше на сайті ua.jooble.org...</a>
+                        }
+                    </h5>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left col-6">
+                        <a href="@Url.Action("Respond", "Vacancy", new { vacancyId = Model.VacancyId})" class="btn btn-success btn-md">Відгукнутися</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,20 @@
+.footer {
+    position: absolute;
+    width: 100%;
+}
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 6rem !important;
+}
+
+.mt-6 {
+    margin-top: 6rem!important;
+}
+
+.mb-6 {
+    margin-bottom: 6rem !important;
+}
